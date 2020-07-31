@@ -22,12 +22,13 @@ To make this work, please create a `~/.timewarrior/timew-sync.toml`:
 url = "XXX"
 username = "XXX"
 password = "XXX"
-pattern = "(\w+\d+)"
+pattern = "(\\w+-\\d+)"
 ```
 
 The `pattern` is a Python regex that is matched against every tag of the
 `timew` intervals. It must contain at least one group.
 
+When experiencing `toml.decoder.TomlDecodeError: Reserved escape sequence used` make sure to escape backslashes.
 
 ## Using
 
