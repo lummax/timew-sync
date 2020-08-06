@@ -1,5 +1,7 @@
 import argparse
+import collections
 import dataclasses
+import functools
 import getpass
 import os.path
 import typing
@@ -45,6 +47,12 @@ class Jira:
     def post(self, endpoint: str, **kwargs):
         return self.session.post(os.path.join(self.url, endpoint), **kwargs)
 
+    @functools.lru_cache()
+    def summary(self, ticket_id: str) -> typing.Optional[str]:
+        response = self.get(f"issue/{ticket_id}?fields=summary")
+        response.raise_for_status()
+        return response.json().get("fields", {}).get("summary")
+
     def worklog(self, ticket_id: str) -> typing.Iterator[Worklog]:
         response = self.get(f"issue/{ticket_id}/worklog")
         response.raise_for_status()
@@ -58,9 +66,16 @@ class Jira:
     def sync_worklogs(self, entries: typing.Iterable[Worklog]):
         new_entries = set(entries)
         existing = {wl for new in new_entries for wl in self.worklog(new.ticket_id)}
+
+        by_issue = collections.defaultdict(set)
         for to_add in new_entries - existing:
-            print("Adding", to_add)
-            self.add_worklog(to_add)
+            by_issue[to_add.ticket_id].add(to_add)
+
+        for (ticket_id, issues) in sorted(by_issue.items()):
+            print(f"Adding to {ticket_id}: {self.summary(ticket_id)}:")
+            for to_add in issues:
+                print(f"\t- {to_add.timeSpentSeconds / 60} minutes")
+                self.add_worklog(to_add)
 
 
 def parse_args():
