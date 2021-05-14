@@ -7,7 +7,7 @@ extract possible JIRA-IDs from it.
 ## Installation
 
 ```
-git close https://github.com/lummax/timew-sync.git
+git clone https://github.com/lummax/timew-sync.git
 cd timew-sync/
 pip install --user .
 ln -s ~/.local/bin/timew-sync ~/.timewarrior/extensions/sync.py
