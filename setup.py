@@ -12,7 +12,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=["timew-report==1.0.2", "requests==2.24.0", "toml==0.10.1"],
+    install_requires=["timew-report==1.0.2", "requests==2.31.0", "toml==0.10.1"],
     entry_points={"console_scripts": ["timew-sync = timew_sync.__main__:main"]},
     classifiers=[
         "Programming Language :: Python :: 3",
